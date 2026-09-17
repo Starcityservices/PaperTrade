@@ -1,0 +1,2287 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PaperTrade Pro</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:Arial,Helvetica,sans-serif;
+    background:#070a0f;
+    color:#f5f7fa;
+}
+
+button,input,select{
+    font:inherit;
+}
+
+button{
+    cursor:pointer;
+}
+
+.app{
+    display:flex;
+    min-height:100vh;
+}
+
+/* SIDEBAR */
+
+.sidebar{
+    width:230px;
+    position:fixed;
+    left:0;
+    top:0;
+    bottom:0;
+    background:#0b0f15;
+    border-right:1px solid #202832;
+    padding:25px 15px;
+}
+
+.logo{
+    font-size:24px;
+    font-weight:900;
+    padding:0 12px 35px;
+}
+
+.logo span{
+    color:#35e58a;
+}
+
+.nav{
+    display:flex;
+    flex-direction:column;
+    gap:7px;
+}
+
+.nav button{
+    border:0;
+    background:transparent;
+    color:#7f8b99;
+    text-align:left;
+    padding:14px;
+    border-radius:10px;
+    font-weight:bold;
+}
+
+.nav button:hover,
+.nav button.active{
+    background:#151c25;
+    color:white;
+}
+
+.nav button.active{
+    box-shadow:inset 3px 0 #35e58a;
+}
+
+.account-box{
+    position:absolute;
+    left:15px;
+    right:15px;
+    bottom:20px;
+    background:#111720;
+    border:1px solid #222d39;
+    border-radius:12px;
+    padding:15px;
+}
+
+.account-box small{
+    color:#737f8d;
+}
+
+.account-box strong{
+    display:block;
+    margin-top:7px;
+    color:#35e58a;
+}
+
+/* MAIN */
+
+.main{
+    margin-left:230px;
+    width:calc(100% - 230px);
+    padding:25px 35px;
+}
+
+.topbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:25px;
+}
+
+.topbar h1{
+    font-size:27px;
+}
+
+.market-status{
+    color:#7f8b99;
+    font-size:13px;
+    margin-top:6px;
+}
+
+.market-dot{
+    display:inline-block;
+    width:8px;
+    height:8px;
+    background:#35e58a;
+    border-radius:50%;
+    margin-right:6px;
+    box-shadow:0 0 12px #35e58a;
+}
+
+.buying-power{
+    background:#111720;
+    border:1px solid #222d39;
+    padding:12px 16px;
+    border-radius:10px;
+}
+
+.buying-power span{
+    color:#7f8b99;
+    font-size:12px;
+}
+
+.buying-power strong{
+    color:#35e58a;
+    margin-left:5px;
+}
+
+/* TABS */
+
+.tab{
+    display:none;
+}
+
+.tab.active{
+    display:block;
+}
+
+/* DASHBOARD */
+
+.stats{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:15px;
+    margin-bottom:18px;
+}
+
+.card{
+    background:#0e141c;
+    border:1px solid #202a35;
+    border-radius:14px;
+    padding:20px;
+}
+
+.stat-label{
+    color:#7f8b99;
+    font-size:12px;
+    text-transform:uppercase;
+}
+
+.stat-value{
+    font-size:24px;
+    font-weight:900;
+    margin-top:8px;
+}
+
+.green{
+    color:#35e58a;
+}
+
+.red{
+    color:#ff5f6d;
+}
+
+.dashboard-grid{
+    display:grid;
+    grid-template-columns:2fr 1fr;
+    gap:18px;
+}
+
+/* CHART */
+
+.chart-card{
+    padding:20px;
+}
+
+.chart-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:15px;
+}
+
+.chart-header h2{
+    font-size:18px;
+}
+
+.timeframes button{
+    background:#151d27;
+    border:1px solid #293440;
+    color:#778391;
+    padding:7px 10px;
+    border-radius:7px;
+    margin-left:4px;
+}
+
+.timeframes button.active{
+    color:white;
+    border-color:#35e58a;
+}
+
+.chart-info{
+    margin-bottom:12px;
+}
+
+.chart-price{
+    font-size:28px;
+    font-weight:900;
+}
+
+.chart-change{
+    font-size:13px;
+    margin-top:4px;
+}
+
+canvas{
+    width:100%;
+    height:330px;
+    display:block;
+}
+
+/* ORDER PANEL */
+
+.order-panel h2{
+    margin-bottom:18px;
+}
+
+.order-tabs{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    margin-bottom:15px;
+}
+
+.order-tabs button{
+    padding:11px;
+    border:0;
+    background:#151d27;
+    color:#778391;
+}
+
+.order-tabs button:first-child{
+    border-radius:8px 0 0 8px;
+}
+
+.order-tabs button:last-child{
+    border-radius:0 8px 8px 0;
+}
+
+.order-tabs button.active{
+    background:#35e58a;
+    color:#06120b;
+    font-weight:bold;
+}
+
+.input-group{
+    margin-bottom:14px;
+}
+
+.input-group label{
+    display:block;
+    color:#7f8b99;
+    font-size:12px;
+    margin-bottom:7px;
+}
+
+.input-group input,
+.input-group select{
+    width:100%;
+    background:#090d13;
+    color:white;
+    border:1px solid #293440;
+    padding:12px;
+    border-radius:8px;
+    outline:none;
+}
+
+.input-group input:focus,
+.input-group select:focus{
+    border-color:#35e58a;
+}
+
+.order-summary{
+    background:#090d13;
+    border:1px solid #202a35;
+    border-radius:9px;
+    padding:13px;
+    margin:15px 0;
+}
+
+.summary-row{
+    display:flex;
+    justify-content:space-between;
+    margin:8px 0;
+    color:#8a96a4;
+}
+
+.summary-row strong{
+    color:white;
+}
+
+.order-button{
+    width:100%;
+    border:0;
+    padding:14px;
+    background:#35e58a;
+    color:#06120b;
+    border-radius:9px;
+    font-weight:900;
+}
+
+.order-button:hover{
+    opacity:.85;
+}
+
+/* STOCK LIST */
+
+.section-title{
+    margin-bottom:18px;
+}
+
+.stock-list{
+    background:#0e141c;
+    border:1px solid #202a35;
+    border-radius:14px;
+    overflow:hidden;
+}
+
+.stock-header,
+.stock-row{
+    display:grid;
+    grid-template-columns:1.5fr 1fr 1fr 1fr 100px;
+    gap:15px;
+    align-items:center;
+    padding:16px 20px;
+}
+
+.stock-header{
+    color:#778391;
+    font-size:11px;
+    text-transform:uppercase;
+    border-bottom:1px solid #202a35;
+}
+
+.stock-row{
+    border-bottom:1px solid #202a35;
+}
+
+.stock-row:last-child{
+    border-bottom:0;
+}
+
+.stock-name{
+    font-weight:900;
+}
+
+.company{
+    color:#778391;
+    font-size:12px;
+    margin-top:4px;
+}
+
+.trade-small{
+    background:#35e58a;
+    border:0;
+    padding:8px 12px;
+    border-radius:7px;
+    font-weight:bold;
+}
+
+/* PORTFOLIO */
+
+.positions{
+    display:grid;
+    gap:12px;
+}
+
+.position{
+    display:grid;
+    grid-template-columns:1.5fr 1fr 1fr 1fr;
+    align-items:center;
+    background:#0e141c;
+    border:1px solid #202a35;
+    border-radius:13px;
+    padding:18px;
+}
+
+.position-label{
+    color:#778391;
+    font-size:11px;
+    text-transform:uppercase;
+}
+
+.position-value{
+    margin-top:5px;
+    font-weight:bold;
+}
+
+.empty{
+    background:#0e141c;
+    border:1px solid #202a35;
+    border-radius:14px;
+    padding:45px;
+    text-align:center;
+    color:#778391;
+}
+
+/* NEWS */
+
+.news-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:15px;
+}
+
+.news{
+    background:#0e141c;
+    border:1px solid #202a35;
+    border-radius:14px;
+    padding:20px;
+}
+
+.news-tag{
+    color:#35e58a;
+    font-size:11px;
+    font-weight:bold;
+}
+
+.news h3{
+    margin:9px 0;
+}
+
+.news p{
+    color:#7f8b99;
+    line-height:1.5;
+    font-size:14px;
+}
+
+/* ORDERS */
+
+.orders{
+    background:#0e141c;
+    border:1px solid #202a35;
+    border-radius:14px;
+    overflow:hidden;
+}
+
+.order-history{
+    display:grid;
+    grid-template-columns:1fr 1fr 1fr 1fr 1fr;
+    padding:15px 20px;
+    border-bottom:1px solid #202a35;
+}
+
+.order-history.header{
+    color:#778391;
+    font-size:11px;
+    text-transform:uppercase;
+}
+
+.no-orders{
+    padding:40px;
+    text-align:center;
+    color:#778391;
+}
+
+/* RESET */
+
+.reset{
+    margin-top:20px;
+    background:#151d27;
+    color:white;
+    border:1px solid #293440;
+    padding:11px 15px;
+    border-radius:8px;
+}
+
+/* MOBILE */
+
+@media(max-width:1000px){
+
+    .sidebar{
+        width:75px;
+    }
+
+    .logo{
+        font-size:0;
+    }
+
+    .logo span{
+        font-size:20px;
+    }
+
+    .nav button{
+        font-size:0;
+        text-align:center;
+    }
+
+    .nav button:first-letter{
+        font-size:20px;
+    }
+
+    .main{
+        margin-left:75px;
+        width:calc(100% - 75px);
+    }
+
+    .dashboard-grid{
+        grid-template-columns:1fr;
+    }
+
+    .stats{
+        grid-template-columns:repeat(2,1fr);
+    }
+}
+
+@media(max-width:650px){
+
+    .main{
+        padding:18px;
+    }
+
+    .topbar{
+        gap:10px;
+    }
+
+    .buying-power{
+        font-size:12px;
+    }
+
+    .stats{
+        grid-template-columns:1fr;
+    }
+
+    .stock-header{
+        display:none;
+    }
+
+    .stock-row{
+        grid-template-columns:1fr 1fr;
+    }
+
+    .news-grid{
+        grid-template-columns:1fr;
+    }
+
+    .position{
+        grid-template-columns:1fr 1fr;
+        gap:15px;
+    }
+
+    .order-history{
+        grid-template-columns:1fr 1fr;
+        gap:10px;
+    }
+
+    .order-history.header{
+        display:none;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<!-- SIDEBAR -->
+
+<aside class="sidebar">
+
+    <div class="logo">
+        Paper<span>Trade</span>
+    </div>
+
+    <nav class="nav">
+
+        <button class="active"
+                onclick="openTab('dashboard',this)">
+            🏠 Dashboard
+        </button>
+
+        <button onclick="openTab('markets',this)">
+            📈 Markets
+        </button>
+
+        <button onclick="openTab('portfolio',this)">
+            💼 Portfolio
+        </button>
+
+        <button onclick="openTab('orders',this)">
+            📋 Orders
+        </button>
+
+        <button onclick="openTab('news',this)">
+            📰 News
+        </button>
+
+    </nav>
+
+    <div class="account-box">
+        <small>ACCOUNT</small>
+        <strong>● PAPER TRADING</strong>
+    </div>
+
+</aside>
+
+
+<!-- MAIN -->
+
+<main class="main">
+
+<header class="topbar">
+
+    <div>
+
+        <h1 id="pageTitle">
+            Dashboard
+        </h1>
+
+        <div class="market-status">
+            <span class="market-dot"></span>
+            Simulated market open
+        </div>
+
+    </div>
+
+    <div class="buying-power">
+
+        <span>Buying Power</span>
+
+        <strong id="cash">
+            $10,000.00
+        </strong>
+
+    </div>
+
+</header>
+
+
+<!-- DASHBOARD -->
+
+<section id="dashboard" class="tab active">
+
+    <div class="stats">
+
+        <div class="card">
+
+            <div class="stat-label">
+                Account Value
+            </div>
+
+            <div class="stat-value"
+                 id="accountValue">
+                $10,000.00
+            </div>
+
+        </div>
+
+        <div class="card">
+
+            <div class="stat-label">
+                Invested
+            </div>
+
+            <div class="stat-value"
+                 id="invested">
+                $0.00
+            </div>
+
+        </div>
+
+        <div class="card">
+
+            <div class="stat-label">
+                Total Return
+            </div>
+
+            <div class="stat-value green"
+                 id="totalReturn">
+                $0.00
+            </div>
+
+        </div>
+
+        <div class="card">
+
+            <div class="stat-label">
+                Cash
+            </div>
+
+            <div class="stat-value"
+                 id="cashStat">
+                $10,000.00
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="dashboard-grid">
+
+        <!-- CHART -->
+
+        <div class="card chart-card">
+
+            <div class="chart-header">
+
+                <h2>Market Overview</h2>
+
+                <div class="timeframes">
+
+                    <button class="active"
+                            onclick="changeTimeframe(this,30)">
+                        1D
+                    </button>
+
+                    <button onclick="changeTimeframe(this,60)">
+                        1W
+                    </button>
+
+                    <button onclick="changeTimeframe(this,100)">
+                        1M
+                    </button>
+
+                    <button onclick="changeTimeframe(this,150)">
+                        1Y
+                    </button>
+
+                </div>
+
+            </div>
+
+            <div class="chart-info">
+
+                <div class="chart-price"
+                     id="chartPrice">
+                    $125.50
+                </div>
+
+                <div class="chart-change green"
+                     id="chartChange">
+                    +0.00%
+                </div>
+
+            </div>
+
+            <canvas id="marketChart"></canvas>
+
+        </div>
+
+
+        <!-- ORDER PANEL -->
+
+        <div class="card order-panel">
+
+            <h2>Trade</h2>
+
+            <div class="order-tabs">
+
+                <button class="active"
+                        id="buyTab"
+                        onclick="setSide('buy')">
+                    BUY
+                </button>
+
+                <button id="sellTab"
+                        onclick="setSide('sell')">
+                    SELL
+                </button>
+
+            </div>
+
+            <div class="input-group">
+
+                <label>STOCK</label>
+
+                <select id="tradeStock"
+                        onchange="updateOrder()">
+                </select>
+
+            </div>
+
+            <div class="input-group">
+
+                <label>ORDER TYPE</label>
+
+                <select id="orderType"
+                        onchange="updateOrder()">
+
+                    <option value="market">
+                        Market Order
+                    </option>
+
+                    <option value="limit">
+                        Limit Order
+                    </option>
+
+                </select>
+
+            </div>
+
+            <div class="input-group">
+
+                <label>SHARES</label>
+
+                <input
+                    id="shares"
+                    type="number"
+                    min="1"
+                    value="1"
+                    oninput="updateOrder()"
+                >
+
+            </div>
+
+            <div class="input-group"
+                 id="limitBox"
+                 style="display:none">
+
+                <label>LIMIT PRICE</label>
+
+                <input
+                    id="limitPrice"
+                    type="number"
+                    step="0.01"
+                    oninput="updateOrder()"
+                >
+
+            </div>
+
+            <div class="order-summary">
+
+                <div class="summary-row">
+                    <span>Market Price</span>
+                    <strong id="orderPrice">$0.00</strong>
+                </div>
+
+                <div class="summary-row">
+                    <span>Estimated Total</span>
+                    <strong id="orderTotal">$0.00</strong>
+                </div>
+
+                <div class="summary-row">
+                    <span>Buying Power</span>
+                    <strong id="orderCash">$10,000.00</strong>
+                </div>
+
+            </div>
+
+            <button class="order-button"
+                    id="orderButton"
+                    onclick="placeOrder()">
+                BUY STOCK
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- MARKETS -->
+
+<section id="markets" class="tab">
+
+    <h2 class="section-title">
+        Markets
+    </h2>
+
+    <div class="stock-list">
+
+        <div class="stock-header">
+
+            <div>Company</div>
+            <div>Price</div>
+            <div>Change</div>
+            <div>Sector</div>
+            <div></div>
+
+        </div>
+
+        <div id="marketRows"></div>
+
+    </div>
+
+</section>
+
+
+<!-- PORTFOLIO -->
+
+<section id="portfolio" class="tab">
+
+    <h2 class="section-title">
+        Your Portfolio
+    </h2>
+
+    <div id="positions"
+         class="positions">
+    </div>
+
+    <button class="reset"
+            onclick="resetAccount()">
+        Reset Paper Account
+    </button>
+
+</section>
+
+
+<!-- ORDERS -->
+
+<section id="orders" class="tab">
+
+    <h2 class="section-title">
+        Order History
+    </h2>
+
+    <div class="orders">
+
+        <div class="order-history header">
+
+            <div>Time</div>
+            <div>Symbol</div>
+            <div>Side</div>
+            <div>Shares</div>
+            <div>Price</div>
+
+        </div>
+
+        <div id="orderHistory"></div>
+
+    </div>
+
+</section>
+
+
+<!-- NEWS -->
+
+<section id="news" class="tab">
+
+    <h2 class="section-title">
+        Market News
+    </h2>
+
+    <div class="news-grid">
+
+        <article class="news">
+
+            <div class="news-tag">
+                MARKET
+            </div>
+
+            <h3>
+                Simulated markets open higher
+            </h3>
+
+            <p>
+                Technology and automotive stocks are
+                seeing increased fictional trading activity
+                in today's paper market.
+            </p>
+
+        </article>
+
+
+        <article class="news">
+
+            <div class="news-tag">
+                NOVA
+            </div>
+
+            <h3>
+                Nova announces fictional expansion
+            </h3>
+
+            <p>
+                Nova Technologies has announced a
+                simulated expansion into cloud computing.
+            </p>
+
+        </article>
+
+
+        <article class="news">
+
+            <div class="news-tag">
+                APEX
+            </div>
+
+            <h3>
+                Apex Motors releases new concept
+            </h3>
+
+            <p>
+                Traders are reacting to Apex's fictional
+                electric vehicle concept announcement.
+            </p>
+
+        </article>
+
+
+        <article class="news">
+
+            <div class="news-tag">
+                ENERGY
+            </div>
+
+            <h3>
+                Energy sector moves higher
+            </h3>
+
+            <p>
+                Blazer Energy is one of the largest
+                simulated movers in today's market.
+            </p>
+
+        </article>
+
+    </div>
+
+</section>
+
+</main>
+
+</div>
+
+
+<script>
+
+/* =========================
+   FAKE STOCK DATABASE
+========================= */
+
+const defaultStocks = {
+
+    NOVA:{
+        name:"Nova Technologies",
+        sector:"Technology",
+        price:125.50
+    },
+
+    APEX:{
+        name:"Apex Motors",
+        sector:"Automotive",
+        price:82.30
+    },
+
+    BLZR:{
+        name:"Blazer Energy",
+        sector:"Energy",
+        price:47.85
+    },
+
+    VRTX:{
+        name:"Vertex Systems",
+        sector:"Technology",
+        price:215.20
+    },
+
+    LUNA:{
+        name:"Luna Entertainment",
+        sector:"Entertainment",
+        price:63.40
+    },
+
+    OCEAN:{
+        name:"Ocean Foods",
+        sector:"Consumer",
+        price:29.75
+    }
+
+};
+
+
+/* =========================
+   LOAD SAVED DATA
+========================= */
+
+let stocks =
+JSON.parse(localStorage.getItem("paperStocks"))
+|| structuredClone(defaultStocks);
+
+let cash =
+Number(localStorage.getItem("paperCash"))
+|| 10000;
+
+let portfolio =
+JSON.parse(localStorage.getItem("paperPortfolio"))
+|| {};
+
+let orders =
+JSON.parse(localStorage.getItem("paperOrders"))
+|| {};
+
+let priceHistory =
+JSON.parse(localStorage.getItem("paperHistory"))
+|| [];
+
+let side = "buy";
+
+
+/* =========================
+   SAVE DATA
+========================= */
+
+function saveData(){
+
+    localStorage.setItem(
+        "paperStocks",
+        JSON.stringify(stocks)
+    );
+
+    localStorage.setItem(
+        "paperCash",
+        cash
+    );
+
+    localStorage.setItem(
+        "paperPortfolio",
+        JSON.stringify(portfolio)
+    );
+
+    localStorage.setItem(
+        "paperOrders",
+        JSON.stringify(orders)
+    );
+
+    localStorage.setItem(
+        "paperHistory",
+        JSON.stringify(priceHistory.slice(-200))
+    );
+
+}
+
+
+/* =========================
+   MONEY FORMAT
+========================= */
+
+function money(number){
+
+    return "$" + Number(number).toLocaleString(
+        "en-US",
+        {
+            minimumFractionDigits:2,
+            maximumFractionDigits:2
+        }
+    );
+
+}
+
+
+/* =========================
+   TAB SYSTEM
+========================= */
+
+function openTab(tab,button){
+
+    document
+    .querySelectorAll(".tab")
+    .forEach(x =>
+        x.classList.remove("active")
+    );
+
+    document
+    .getElementById(tab)
+    .classList.add("active");
+
+    document
+    .querySelectorAll(".nav button")
+    .forEach(x =>
+        x.classList.remove("active")
+    );
+
+    button.classList.add("active");
+
+    const titles = {
+
+        dashboard:"Dashboard",
+        markets:"Markets",
+        portfolio:"Portfolio",
+        orders:"Orders",
+        news:"Market News"
+
+    };
+
+    document.getElementById(
+        "pageTitle"
+    ).textContent = titles[tab];
+
+}
+
+
+/* =========================
+   ORDER SIDE
+========================= */
+
+function setSide(newSide){
+
+    side = newSide;
+
+    document
+    .getElementById("buyTab")
+    .classList.toggle(
+        "active",
+        side === "buy"
+    );
+
+    document
+    .getElementById("sellTab")
+    .classList.toggle(
+        "active",
+        side === "sell"
+    );
+
+    document
+    .getElementById("orderButton")
+    .textContent =
+        side === "buy"
+        ? "BUY STOCK"
+        : "SELL STOCK";
+
+}
+
+
+/* =========================
+   STOCK SELECT
+========================= */
+
+function buildStockSelect(){
+
+    const select =
+    document.getElementById("tradeStock");
+
+    select.innerHTML = "";
+
+    Object.keys(stocks)
+    .forEach(symbol => {
+
+        const option =
+        document.createElement("option");
+
+        option.value = symbol;
+
+        option.textContent =
+        symbol + " — " +
+        stocks[symbol].name;
+
+        select.appendChild(option);
+
+    });
+
+}
+
+
+/* =========================
+   ORDER CALCULATOR
+========================= */
+
+function updateOrder(){
+
+    const symbol =
+    document.getElementById(
+        "tradeStock"
+    ).value;
+
+    const shares =
+    Math.max(
+        1,
+        Number(
+            document.getElementById(
+                "shares"
+            ).value
+        ) || 1
+    );
+
+    const stock =
+    stocks[symbol];
+
+    document.getElementById(
+        "orderPrice"
+    ).textContent =
+        money(stock.price);
+
+    document.getElementById(
+        "orderCash"
+    ).textContent =
+        money(cash);
+
+    const type =
+    document.getElementById(
+        "orderType"
+    ).value;
+
+    const limitBox =
+    document.getElementById(
+        "limitBox"
+    );
+
+    if(type === "limit"){
+
+        limitBox.style.display =
+        "block";
+
+        document.getElementById(
+            "limitPrice"
+        ).value =
+        stock.price.toFixed(2);
+
+    }else{
+
+        limitBox.style.display =
+        "none";
+
+    }
+
+    let price = stock.price;
+
+    if(type === "limit"){
+
+        price =
+        Number(
+            document.getElementById(
+                "limitPrice"
+            ).value
+        ) || stock.price;
+
+    }
+
+    document.getElementById(
+        "orderTotal"
+    ).textContent =
+        money(price * shares);
+
+}
+
+
+/* =========================
+   PLACE ORDER
+========================= */
+
+function placeOrder(){
+
+    const symbol =
+    document.getElementById(
+        "tradeStock"
+    ).value;
+
+    const shares =
+    Math.floor(
+        Number(
+            document.getElementById(
+                "shares"
+            ).value
+        )
+    );
+
+    if(shares <= 0){
+
+        alert("Enter a valid number of shares.");
+
+        return;
+
+    }
+
+    const stock =
+    stocks[symbol];
+
+    const type =
+    document.getElementById(
+        "orderType"
+    ).value;
+
+    let executionPrice =
+    stock.price;
+
+
+    /* LIMIT ORDER */
+
+    if(type === "limit"){
+
+        const limit =
+        Number(
+            document.getElementById(
+                "limitPrice"
+            ).value
+        );
+
+        if(!limit || limit <= 0){
+
+            alert("Enter a valid limit price.");
+
+            return;
+
+        }
+
+        if(side === "buy" &&
+           limit < stock.price){
+
+            alert(
+                "Your fictional limit order was not filled because the market price is above your limit."
+            );
+
+            return;
+
+        }
+
+        if(side === "sell" &&
+           limit > stock.price){
+
+            alert(
+                "Your fictional limit order was not filled because the market price is below your limit."
+            );
+
+            return;
+
+        }
+
+        executionPrice = limit;
+
+    }
+
+
+    const total =
+    executionPrice * shares;
+
+
+    /* BUY */
+
+    if(side === "buy"){
+
+        if(cash < total){
+
+            alert(
+                "You don't have enough fake cash."
+            );
+
+            return;
+
+        }
+
+        cash -= total;
+
+
+        if(!portfolio[symbol]){
+
+            portfolio[symbol] = {
+
+                shares:0,
+                averageCost:0
+
+            };
+
+        }
+
+        const position =
+        portfolio[symbol];
+
+        const oldValue =
+        position.shares *
+        position.averageCost;
+
+        const newValue =
+        oldValue + total;
+
+        position.shares += shares;
+
+        position.averageCost =
+        newValue /
+        position.shares;
+
+    }
+
+
+    /* SELL */
+
+    else{
+
+        if(
+            !portfolio[symbol] ||
+            portfolio[symbol].shares < shares
+        ){
+
+            alert(
+                "You don't own enough shares."
+            );
+
+            return;
+
+        }
+
+        cash += total;
+
+        portfolio[symbol].shares -= shares;
+
+        if(
+            portfolio[symbol].shares === 0
+        ){
+
+            delete portfolio[symbol];
+
+        }
+
+    }
+
+
+    /* SAVE ORDER */
+
+    const orderId =
+    Date.now();
+
+    orders[orderId] = {
+
+        time:new Date().toLocaleTimeString(),
+
+        symbol:symbol,
+
+        side:side,
+
+        shares:shares,
+
+        price:executionPrice
+
+    };
+
+
+    saveData();
+
+    renderAll();
+
+    alert(
+        side.toUpperCase() +
+        " " +
+        shares +
+        " " +
+        symbol +
+        " @ " +
+        money(executionPrice)
+    );
+
+}
+
+
+/* =========================
+   UPDATE PRICES
+========================= */
+
+function updatePrices(){
+
+    Object.keys(stocks)
+    .forEach(symbol => {
+
+        const stock =
+        stocks[symbol];
+
+        /*
+        More realistic random movement:
+        smaller moves most of the time,
+        occasional larger movement.
+        */
+
+        const random =
+        (Math.random() - 0.48);
+
+        const volatility =
+        symbol === "BLZR"
+        ? 0.025
+        : 0.012;
+
+        stock.price *=
+        1 + random * volatility;
+
+        stock.price =
+        Math.max(
+            1,
+            Number(
+                stock.price.toFixed(2)
+            )
+        );
+
+    });
+
+
+    /* MARKET INDEX */
+
+    const average =
+    Object.values(stocks)
+    .reduce(
+        (sum,stock) =>
+        sum + stock.price,
+        0
+    )
+    /
+    Object.keys(stocks).length;
+
+
+    priceHistory.push(average);
+
+    if(priceHistory.length > 200){
+
+        priceHistory.shift();
+
+    }
+
+    saveData();
+
+    renderAll();
+
+}
+
+
+/* =========================
+   MARKET TABLE
+========================= */
+
+function renderMarkets(){
+
+    const container =
+    document.getElementById(
+        "marketRows"
+    );
+
+    container.innerHTML = "";
+
+    Object.entries(stocks)
+    .forEach(([symbol,stock]) => {
+
+        const change =
+        ((stock.price -
+        defaultStocks[symbol].price)
+        /
+        defaultStocks[symbol].price)
+        * 100;
+
+        const color =
+        change >= 0
+        ? "green"
+        : "red";
+
+        container.innerHTML += `
+
+            <div class="stock-row">
+
+                <div>
+
+                    <div class="stock-name">
+                        ${symbol}
+                    </div>
+
+                    <div class="company">
+                        ${stock.name}
+                    </div>
+
+                </div>
+
+                <div>
+                    ${money(stock.price)}
+                </div>
+
+                <div class="${color}">
+                    ${change >= 0 ? "+" : ""}
+                    ${change.toFixed(2)}%
+                </div>
+
+                <div class="company">
+                    ${stock.sector}
+                </div>
+
+                <button
+                    class="trade-small"
+                    onclick="quickTrade('${symbol}')">
+                    Trade
+                </button>
+
+            </div>
+
+        `;
+
+    });
+
+}
+
+
+/* =========================
+   QUICK TRADE
+========================= */
+
+function quickTrade(symbol){
+
+    document.getElementById(
+        "tradeStock"
+    ).value = symbol;
+
+    updateOrder();
+
+    const dashboardButton =
+    document.querySelector(
+        ".nav button"
+    );
+
+    openTab(
+        "dashboard",
+        dashboardButton
+    );
+
+}
+
+
+/* =========================
+   PORTFOLIO
+========================= */
+
+function renderPortfolio(){
+
+    const container =
+    document.getElementById(
+        "positions"
+    );
+
+    container.innerHTML = "";
+
+    const entries =
+    Object.entries(portfolio);
+
+
+    if(entries.length === 0){
+
+        container.innerHTML = `
+
+            <div class="empty">
+
+                You don't own any fictional stocks yet.
+
+                <br><br>
+
+                Go to Markets and place a paper trade.
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    entries.forEach(
+    ([symbol,position]) => {
+
+        const stock =
+        stocks[symbol];
+
+        const value =
+        position.shares *
+        stock.price;
+
+        const cost =
+        position.shares *
+        position.averageCost;
+
+        const profit =
+        value - cost;
+
+        const percent =
+        cost === 0
+        ? 0
+        : (profit / cost) * 100;
+
+        const color =
+        profit >= 0
+        ? "green"
+        : "red";
+
+
+        container.innerHTML += `
+
+            <div class="position">
+
+                <div>
+
+                    <div class="stock-name">
+                        ${symbol}
+                    </div>
+
+                    <div class="company">
+                        ${stock.name}
+                    </div>
+
+                </div>
+
+                <div>
+
+                    <div class="position-label">
+                        Shares
+                    </div>
+
+                    <div class="position-value">
+                        ${position.shares}
+                    </div>
+
+                </div>
+
+                <div>
+
+                    <div class="position-label">
+                        Market Value
+                    </div>
+
+                    <div class="position-value">
+                        ${money(value)}
+                    </div>
+
+                </div>
+
+                <div>
+
+                    <div class="position-label">
+                        Unrealized P/L
+                    </div>
+
+                    <div class="position-value ${color}">
+                        ${profit >= 0 ? "+" : ""}
+                        ${money(profit)}
+                        (${percent.toFixed(2)}%)
+                    </div>
+
+                </div>
+
+            </div>
+
+        `;
+
+    });
+
+}
+
+
+/* =========================
+   ORDER HISTORY
+========================= */
+
+function renderOrders(){
+
+    const container =
+    document.getElementById(
+        "orderHistory"
+    );
+
+    container.innerHTML = "";
+
+    const list =
+    Object.values(orders)
+    .reverse();
+
+
+    if(list.length === 0){
+
+        container.innerHTML = `
+
+            <div class="no-orders">
+                No trades yet.
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    list.forEach(order => {
+
+        const color =
+        order.side === "buy"
+        ? "green"
+        : "red";
+
+
+        container.innerHTML += `
+
+            <div class="order-history">
+
+                <div>
+                    ${order.time}
+                </div>
+
+                <div>
+                    <strong>
+                        ${order.symbol}
+                    </strong>
+                </div>
+
+                <div class="${color}">
+                    ${order.side.toUpperCase()}
+                </div>
+
+                <div>
+                    ${order.shares}
+                </div>
+
+                <div>
+                    ${money(order.price)}
+                </div>
+
+            </div>
+
+        `;
+
+    });
+
+}
+
+
+/* =========================
+   WATCH / DASHBOARD
+========================= */
+
+function renderStats(){
+
+    const invested =
+    Object.entries(portfolio)
+    .reduce(
+        (sum,[symbol,position]) =>
+        sum +
+        position.shares *
+        stocks[symbol].price,
+        0
+    );
+
+
+    const account =
+    cash + invested;
+
+    const profit =
+    account - 10000;
+
+
+    document.getElementById(
+        "cash"
+    ).textContent =
+    money(cash);
+
+    document.getElementById(
+        "cashStat"
+    ).textContent =
+    money(cash);
+
+    document.getElementById(
+        "invested"
+    ).textContent =
+    money(invested);
+
+    document.getElementById(
+        "accountValue"
+    ).textContent =
+    money(account);
+
+
+    const returnElement =
+    document.getElementById(
+        "totalReturn"
+    );
+
+    returnElement.textContent =
+    (profit >= 0 ? "+" : "") +
+    money(profit);
+
+    returnElement.className =
+    "stat-value " +
+    (profit >= 0
+    ? "green"
+    : "red");
+
+}
+
+
+/* =========================
+   CHART
+========================= */
+
+let chartPoints = 50;
+
+
+function changeTimeframe(button,points){
+
+    document
+    .querySelectorAll(
+        ".timeframes button"
+    )
+    .forEach(
+        b => b.classList.remove("active")
+    );
+
+    button.classList.add("active");
+
+    chartPoints = points;
+
+    drawChart();
+
+}
+
+
+function drawChart(){
+
+    const canvas =
+    document.getElementById(
+        "marketChart"
+    );
+
+    const ctx =
+    canvas.getContext("2d");
+
+    const width =
+    canvas.clientWidth;
+
+    const height = 330;
+
+    const dpr =
+    window.devicePixelRatio || 1;
+
+    canvas.width =
+    width * dpr;
+
+    canvas.height =
+    height * dpr;
+
+    ctx.scale(dpr,dpr);
+
+    ctx.clearRect(
+        0,
+        0,
+        width,
+        height
+    );
+
+
+    let data =
+    priceHistory.slice(-chartPoints);
+
+
+    if(data.length < 2){
+
+        data = [];
+
+        let value = 100;
+
+        for(
+            let i=0;
+            i<chartPoints;
+            i++
+        ){
+
+            value *=
+            1 +
+            (Math.random()-.48)*.025;
+
+            data.push(value);
+
+        }
+
+    }
+
+
+    const min =
+    Math.min(...data);
+
+    const max =
+    Math.max(...data);
+
+    const range =
+    max - min || 1;
+
+
+    /* GRID */
+
+    ctx.strokeStyle =
+    "#202a35";
+
+    ctx.lineWidth = 1;
+
+
+    for(let i=1;i<5;i++){
+
+        const y =
+        i * height / 5;
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            0,
+            y
+        );
+
+        ctx.lineTo(
+            width,
+            y
+        );
+
+        ctx.stroke();
+
+    }
+
+
+    /* LINE */
+
+    ctx.beginPath();
+
+
+    data.forEach(
+    (value,index) => {
+
+        const x =
+        index /
+        (data.length - 1)
+        * width;
+
+        const y =
+        height -
+        (
+            (value-min) /
+            range
+        )
+        * (height-30)
+        - 10;
+
+
+        if(index === 0){
+
+            ctx.moveTo(x,y);
+
+        }else{
+
+            ctx.lineTo(x,y);
+
+        }
+
+    });
+
+
+    ctx.strokeStyle =
+    "#35e58a";
+
+    ctx.lineWidth = 3;
+
+    ctx.stroke();
+
+
+    /* CURRENT PRICE */
+
+    const selected =
+    document.getElementById(
+        "tradeStock"
+    ).value;
+
+    if(stocks[selected]){
+
+        document.getElementById(
+            "chartPrice"
+        ).textContent =
+        money(stocks[selected].price);
+
+    }
+
+}
+
+
+/* =========================
+   RENDER EVERYTHING
+========================= */
+
+function renderAll(){
+
+    renderStats();
+
+    renderMarkets();
+
+    renderPortfolio();
+
+    renderOrders();
+
+    updateOrder();
+
+    drawChart();
+
+}
+
+
+/* =========================
+   RESET
+========================= */
+
+function resetAccount(){
+
+    if(
+        !confirm(
+            "Reset your paper trading account?"
+        )
+    ){
+
+        return;
+
+    }
+
+    stocks =
+    structuredClone(
+        defaultStocks
+    );
+
+    cash = 10000;
+
+    portfolio = {};
+
+    orders = {};
+
+    priceHistory = [];
+
+    saveData();
+
+    renderAll();
+
+}
+
+
+/* =========================
+   START
+========================= */
+
+buildStockSelect();
+
+renderAll();
+
+setInterval(
+    updatePrices,
+    5000
+);
+
+window.addEventListener(
+    "resize",
+    drawChart
+);
+
+</script>
+
+</body>
+</html>
+```
+
+```
